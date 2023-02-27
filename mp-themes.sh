@@ -11,7 +11,7 @@
 # See the LICENSE.md file at the top-level directory of this distribution and
 # at https://raw.githubusercontent.com/RetroPie/RetroPie-Setup/master/LICENSE.md
 #
-# v1.2 - 2023-02-27
+# v1.31 - 2023-02-27
 
 rp_module_id="mpthemes"
 rp_module_desc="Microplay-hub themes for Emulation Station"
@@ -39,11 +39,10 @@ function install_mpthemes() {
     local mptsetup="$scriptdir/scriptmodules/supplementary"
 	
     cd "$md_inst"
-	rm -r "RetroPie/mp-themes.sh"
 	
     if [[ ! -f "$configdir/all/$md_id.cfg" ]]; then
         iniConfig "=" '"' "$configdir/all/$md_id.cfg"
-        iniSet "CFGTHEMES" "MPCORENXT"		
+        iniSet "CFGTHEMES" "mpcorenxt"		
         iniSet "CFGRES" "1080p"
         iniSet "CFGBODY" "NXT_169"
         iniSet "CFGHELP" "SNES"
@@ -79,11 +78,11 @@ function changenxtbody_mpthemes() {
     case "$choice" in
         B1)
 			iniSet "CFGBODY" "NXT_169"
-			sed -i "11s~.*~<include>./art/layouts/body_nxt_169.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "11s~.*~<include>./art/layouts/body_nxt_169.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         B2)
 			iniSet "CFGBODY" "NXT_43"
-			sed -i "11s~.*~<include>./art/layouts/body_nxt_43.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "11s~.*~<include>./art/layouts/body_nxt_43.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
     esac
 }
@@ -101,15 +100,38 @@ function changenxtres_mpthemes() {
     case "$choice" in
         R1)
 			iniSet "CFGRES" "1080p"
-			sed -i "24s~.*~<include>./art/layouts/img_1080p-nxt.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "24s~.*~<include>./art/layouts/img_1080p-nxt.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         R2)
 			iniSet "CFGRES" "720p"
-			sed -i "24s~.*~<include>./art/layouts/img_720p-nxt.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "24s~.*~<include>./art/layouts/img_720p-nxt.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
 		R3)
 			iniSet "CFGRES" "xga"
-			sed -i "24s~.*~<include>./art/layouts/img_xga-nxt.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "24s~.*~<include>./art/layouts/img_xga-nxt.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
+            ;;
+    esac
+}
+
+function changethemescfg_mpthemes() {
+    options=(
+        T1 "Change Config base to MPCORENXT"
+        T2 "Change Config base to MPCORENXT-720p"
+        T3 "Change Config base to MPCORENXT-4-3"
+		X "[current setting: $cfgthemes]"
+    )
+    local cmd=(dialog --backtitle "$__backtitle" --menu "Choose an option." 22 86 16)
+    local choice=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+
+    case "$choice" in
+        T1)
+			iniSet "CFGTHEMES" "mpcorenxt"
+            ;;
+        T2)
+			iniSet "CFGTHEMES" "mpcorenxt-720p"
+            ;;
+		T3)
+			iniSet "CFGTHEMES" "mpcorenxt-4-3"
             ;;
     esac
 }
@@ -134,43 +156,43 @@ function changenxthelp_mpthemes() {
     case "$choice" in
         H1)
 			iniSet "CFGHELP" "8BITDO"
-			sed -i "38s~.*~<include>./art/layouts/help_snes.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_snes.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H2)
 			iniSet "CFGHELP" "8BITDO_SWAP"
-			sed -i "38s~.*~<include>./art/layouts/help_snes_swap.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_snes_swap.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H3)
 			iniSet "CFGHELP" "SNES"
-			sed -i "38s~.*~<include>./art/layouts/help_snes.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_snes.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H4)
 			iniSet "CFGHELP" "SNES_SWAP"
-			sed -i "38s~.*~<include>./art/layouts/help_snes_swap.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_snes_swap.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H5)
 			iniSet "CFGHELP" "XBOXONE"
-			sed -i "38s~.*~<include>./art/layouts/help_xone.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_xone.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H6)
 			iniSet "CFGHELP" "XBOXONE_SWAP"
-			sed -i "38s~.*~<include>./art/layouts/help_xone_swap.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_xone_swap.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H7)
 			iniSet "CFGHELP" "XBOX360"
-			sed -i "38s~.*~<include>./art/layouts/help_x360.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_x360.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H8)
 			iniSet "CFGHELP" "XBOX360_SWAP"
-			sed -i "38s~.*~<include>./art/layouts/help_x360_swap.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_x360_swap.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H9)
 			iniSet "CFGHELP" "PSX"
-			sed -i "38s~.*~<include>./art/layouts/help_psx.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_psx.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
         H10)
 			iniSet "CFGHELP" "PSX_SWAP"
-			sed -i "38s~.*~<include>./art/layouts/help_psx_swap.xml</include>~" /etc/emulationstation/themes/es-theme-"$cfgthemes"/config.xml
+			sed -i "38s~.*~<include>./art/layouts/help_psx_swap.xml</include>~" /etc/emulationstation/themes/$cfgthemes/config.xml
             ;;
     esac
 }	
@@ -258,9 +280,11 @@ function gui_mpthemes() {
 
         options+=(U "Update all installed themes")
         options+=(
-			NXT1 "Change Body-Aspect for $cfgthemes [$cfgbody]"
-            NXT2 "Change Resolution for $cfgthemes [$cfgres]"
-			NXT3 "Change Help-Buttons for $cfgthemes [$cfghelp]"
+			NXT1 "Change Config Base [$cfgthemes]"		
+			NXT2 "Change Body-Aspect for $cfgthemes [$cfgbody]"
+            NXT3 "Change Resolution for $cfgthemes [$cfgres]"
+			NXT4 "Change Help-Buttons for $cfgthemes [$cfghelp]"
+			NXT5 "Manual Edit $cfgthemes [CFG-File]"
             TEK "### Script by Liontek1985 ###"
             )
 
@@ -309,18 +333,24 @@ function gui_mpthemes() {
                     rp_callModule esthemes install_theme "${theme[0]}" "${theme[1]}" "${theme[2]}"
                 done
                 ;;
-				
             NXT1)
 				configini_mpthemes
-				changenxtbody_mpthemes
+				changethemescfg_mpthemes
                 ;;
             NXT2)
 				configini_mpthemes
-				changenxtres_mpthemes
+				changenxtbody_mpthemes
                 ;;
             NXT3)
 				configini_mpthemes
+				changenxtres_mpthemes
+                ;;
+            NXT4)
+				configini_mpthemes
 				changenxthelp_mpthemes
+                ;;
+            NXT5)
+				editFile "/etc/emulationstation/themes/$cfgthemes/config.xml"
                 ;;
             *)
                 theme=(${themes[choice-1]})
